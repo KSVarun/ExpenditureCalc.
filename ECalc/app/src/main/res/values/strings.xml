@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">ECalc</string>
+    <string name="addSal_button">Salary +</string>
+    <string name="addExp_button">Exp +</string>
+    <string name="calExpPer_button">Calc.</string>
+    <string name="login_name">Name</string>
+    <string name="login_password">Passowrd</string>
+    <string name="login_button">Login</string>
+</resources>
