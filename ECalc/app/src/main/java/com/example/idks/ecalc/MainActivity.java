@@ -14,17 +14,25 @@ import android.widget.EditText;
 import android.content.Intent;
 import android.widget.TextView;
 
-public class MainActivity extends AppCompatActivity {
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
+public class MainActivity extends AppCompatActivity {
+    FirebaseAuth auth;
+    FirebaseUser currentUser;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        auth = FirebaseAuth.getInstance();
 
+        auth.getInstance();
+        currentUser = auth.getCurrentUser();
+        onStart();
         Button addSal = (Button) findViewById(R.id.addSalButton);
         addSal.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view){
+            public void onClick(View view) {
                 TextView salaryView = (TextView) findViewById(R.id.salaryField);
                 String strSalary = salaryView.getText().toString();
                 int finalSalary = Integer.parseInt(strSalary);
@@ -32,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
                 salaryView.setEnabled(false);
                 SharedPreferences sharedSalaPref = getSharedPreferences("salInfo", Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = sharedSalaPref.edit();
-                editor.putInt("finalSalaryValue",finalSalary).commit();
+                editor.putInt("finalSalaryValue", finalSalary).commit();
 
             }
         });
@@ -40,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
         Button addExp = (Button) findViewById(R.id.addExpButton);
         addExp.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view){
+            public void onClick(View view) {
                 int exp;
                 TextView expView = (TextView) findViewById(R.id.expField);
                 String strExp = expView.getText().toString();
@@ -48,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
                 fetchAddSal.finalExp(finalExpn);
                 SharedPreferences sharedExpPref = getSharedPreferences("salInfo", Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = sharedExpPref.edit();
-                editor.putInt("finalExpnValue",finalExpn).commit();
+                editor.putInt("finalExpnValue", finalExpn).commit();
                 expView.setText("");
 
             }
@@ -57,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
         Button calExpPer = (Button) findViewById(R.id.calPer);
         calExpPer.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view){
+            public void onClick(View view) {
                 double per = fetchAddSal.calcPer();
                 TextView percentageView = (TextView) findViewById(R.id.percentage);
                 percentageView.setText(Double.toString(per));
@@ -65,8 +73,20 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+    }
+    @Override
+    public void onStart(){
+        super.onStart();
+        if(currentUser == null){
+            startActivity(new Intent(MainActivity.this,loginActivity.class));
+            finish();
+        }
+    }
 
-
+    public void logOut(View V){
+        auth.signOut();
+        startActivity(new Intent(MainActivity.this,loginActivity.class));
+        finish();
     }
 
    }
